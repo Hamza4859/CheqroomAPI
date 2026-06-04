@@ -2,58 +2,98 @@ package com.cheqroom;
 
 import com.cheqroom.resources.CustomerResource;
 import com.cheqroom.resources.ItemResource;
-import com.cheqroom.resources.OrderResource;
-import com.cheqroom.resources.ReservationResource;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Main {
 
+
+
+
+    // Must match Cheqroom field names exactly (case-sensitive)
+    private static final String[] CUSTOM_FIELD_NAMES = {
+        "SN", "Model Number", "Type", "LastCalibrationDate",
+        "CalibrationFrequency", "CalibratedBy", "Description",
+        "StorageLocation", "CurrentLocation", "Notes",
+        "Derogation", "Manufacturer", "PurchasePO", "RetirementDate"
+    };
+
     public static void main(String[] args) throws Exception {
         CheqroomConfig config = new CheqroomConfig();
         CheqroomClient client = new CheqroomClient(config);
-        ObjectMapper mapper = client.getMapper();
-
-        CustomerResource customers = new CustomerResource(client);
         ItemResource items = new ItemResource(client);
-        ReservationResource reservations = new ReservationResource(client);
-        OrderResource orders = new OrderResource(client);
+        CustomerResource customers = new CustomerResource(client);
 
-        System.out.println("\n========== CUSTOMERS ==========");
-        JsonNode customerResult = customers.search(10, 0, "active_or_blocked");
-        prettyPrint(mapper, customerResult);
 
         System.out.println("\n========== ITEMS ==========");
-        JsonNode itemResult = items.searchItems(10, 0);
-        prettyPrint(mapper, itemResult);
+        JsonNode result = items.searchItems(10, 0);
+        printItems(result);
 
-        System.out.println("\n========== RESERVATIONS (open) ==========");
-        JsonNode reservationResult = reservations.search(10, 0, "open");
-        prettyPrint(mapper, reservationResult);
 
-        System.out.println("\n========== CHECKOUTS (open) ==========");
-        JsonNode orderResult = orders.search(10, 0, "open");
-        prettyPrint(mapper, orderResult);
-
-        // --- Uncomment to try individual lookups ---
-        // JsonNode oneItem = items.getItemsById("ITEM_ID_HERE");
-        // prettyPrint(mapper, oneItem);
-
-        // --- Uncomment to create a contact ---
-        // JsonNode newContact = customers.create("Jane Doe", "jane@example.com");
-        // prettyPrint(mapper, newContact);
-
-        // --- Uncomment to create a draft reservation ---
-        // JsonNode newReservation = reservations.create(
-        //     "CUSTOMER_ID",
-        //     "LOCATION_ID",
-        //     "2025-07-01T09:00:00.000Z",
-        //     "2025-07-05T17:00:00.000Z"
-        // );
-        // prettyPrint(mapper, newReservation);
+        System.out.println("\n========== CUSTOMERS ==========");
+        JsonNode result2 = customers.search(10, 0, "active_or_blocked");
+        printCustomers(result2);
     }
 
-    private static void prettyPrint(ObjectMapper mapper, JsonNode node) throws Exception {
-        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node));
+    private static void printCustomers(JsonNode response) {
+        JsonNode docs = response.path("docs");
+        if (docs.isMissingNode() || !docs.isArray()) {
+            printSingleCustomer(response);
+            return;
+        }
+        System.out.printf("Total customers: %d%n%n", response.path("count").asInt());
+        for (JsonNode customer : docs) {
+            printSingleCustomer(customer);
+        }
+    }
+
+    private static void printItems(JsonNode response) {
+        JsonNode docs = response.path("docs");
+        if (docs.isMissingNode() || !docs.isArray()) {
+            printSingleItem(response);
+            return;
+        }
+        System.out.printf("Total items: %d%n%n", response.path("count").asInt());
+        for (JsonNode item : docs) {
+            printSingleItem(item);
+        }
+    }
+
+
+    private static void printSingleCustomer(JsonNode customer) {
+        System.out.println("─────────────────────────────────────────");
+        System.out.printf("  Name      : %s%n", text(customer, "name"));
+        System.out.printf("  Email     : %s%n", text(customer, "email"));
+        System.out.printf("  Status    : %s%n", text(customer, "status"));
+        System.out.printf("  Kind      : %s%n", text(customer, "kind"));
+        System.out.printf("  Blocked   : %s%n", customer.path("blocked").asBoolean(false) ? "Yes" : "No");
+        System.out.println();
+    }
+
+    private static void printSingleItem(JsonNode item) {
+        System.out.println("─────────────────────────────────────────");
+        System.out.printf("  Name      : %s%n", text(item, "name"));
+        System.out.printf("  Status    : %s%n", text(item, "status"));
+        System.out.printf("  Brand     : %s%n", text(item, "brand"));
+        System.out.printf("  Model     : %s%n", text(item, "model"));
+        System.out.printf("  Category  : %s%n", item.path("category").path("name").asText("-"));
+        System.out.printf("  Location  : %s%n", item.path("location").path("name").asText("-"));
+
+        JsonNode fields = item.path("fields");
+        if (!fields.isMissingNode() && fields.isObject()) {
+            System.out.println("  ── Custom Fields ──");
+            for (String fieldName : CUSTOM_FIELD_NAMES) {
+                JsonNode val = fields.path(fieldName);
+                if (!val.isMissingNode() && !val.asText().isBlank()) {
+                    System.out.printf("    %-25s: %s%n", fieldName, val.asText());
+                }
+            }
+        }
+        System.out.println();
+    }
+
+    private static String text(JsonNode node, String field) {
+        String val = node.path(field).asText("");
+        return val.isBlank() ? "-" : val;
     }
 }
