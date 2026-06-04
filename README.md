@@ -1,0 +1,1 @@
+This repo is about testing the cheqroom API
