@@ -9,8 +9,6 @@ public class Main {
 
 
 
-
-    // Must match Cheqroom field names exactly (case-sensitive)
     private static final String[] CUSTOM_FIELD_NAMES = {
         "SN", "Model Number", "Type", "LastCalibrationDate",
         "CalibrationFrequency", "CalibratedBy", "Description",
@@ -26,7 +24,7 @@ public class Main {
 
 
         System.out.println("\n========== ITEMS ==========");
-        JsonNode result = items.searchItems(10, 0);
+        JsonNode result = items.searchItems(25, 0);
         printItems(result);
 
 

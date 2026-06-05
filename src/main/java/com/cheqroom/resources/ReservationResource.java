@@ -8,8 +8,7 @@ import java.util.Map;
 
 public class ReservationResource {
 
-    // Possible listName values:
-    // all, creating, open, closed_manually, closed, today, upcoming, overdue, cancelled, archived
+
     private static final String FIELDS =
             "status,number,fromDate,toDate,created,archived,reserved,cancelled," +
             "closed_manually,name,itemSummary,items,customer,customer.name," +
@@ -21,7 +20,7 @@ public class ReservationResource {
         this.client = client;
     }
 
-    /** Search reservations by status list */
+
     public JsonNode search(int limit, int skip, String listName) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("_fields", FIELDS);
@@ -32,7 +31,7 @@ public class ReservationResource {
         return client.post("/reservations/search", params);
     }
 
-    /** Get one or more reservations by id (comma-separated) */
+
     public JsonNode getById(String... ids) {
         String idPath = String.join(",", ids);
         Map<String, String> params = new LinkedHashMap<>();
@@ -53,10 +52,7 @@ public class ReservationResource {
         return client.post("/reservations/" + idPath, params);
     }
 
-    /**
-     * Create a draft reservation.
-     * dates should be ISO-8601, e.g. "2025-07-01T09:00:00.000Z"
-     */
+
     public JsonNode create(String customerId, String locationId, String fromDate, String toDate) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("customer", customerId);
@@ -66,7 +62,7 @@ public class ReservationResource {
         return client.post("/reservations/create", params);
     }
 
-    /** Set a custom field value on a reservation */
+
     public JsonNode setField(String reservationId, String fieldId, String value) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("field", fieldId);

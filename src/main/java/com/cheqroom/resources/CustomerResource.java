@@ -17,7 +17,7 @@ public class CustomerResource {
         this.client = client;
     }
 
-    /** Search contacts. listName: active_or_blocked | archived */
+
     public JsonNode search(int limit, int skip, String listName) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("_fields", FIELDS);
@@ -28,7 +28,7 @@ public class CustomerResource {
         return client.post("/customers/search", params);
     }
 
-    /** Search contacts by email (duplicate check) */
+
     public JsonNode searchByEmail(String email) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("_fields", FIELDS);
@@ -39,7 +39,7 @@ public class CustomerResource {
         return client.post("/customers/search", params);
     }
 
-    /** Get one or more contacts by id (comma-separated) */
+
     public JsonNode getById(String... ids) {
         String idPath = String.join(",", ids);
         Map<String, String> params = new LinkedHashMap<>();
@@ -51,7 +51,7 @@ public class CustomerResource {
         return client.post("/customers/" + idPath, params);
     }
 
-    /** Create a new contact */
+
     public JsonNode create(String name, String email) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("name", name);
@@ -59,7 +59,6 @@ public class CustomerResource {
         return client.post("/customers/create", params);
     }
 
-    /** Update name/email on an existing contact */
     public JsonNode update(String contactId, String name, String email) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("name", name);
@@ -67,7 +66,7 @@ public class CustomerResource {
         return client.post("/customers/" + contactId + "/update", params);
     }
 
-    /** Archive a contact */
+
     public JsonNode archive(String contactId) {
         // The docs specify GET for archive
         return client.post("/customers/" + contactId + "/archive", Map.of());

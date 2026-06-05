@@ -27,10 +27,7 @@ public class CheqroomClient {
         this.mapper = new ObjectMapper();
     }
 
-    /**
-     * POST with application/x-www-form-urlencoded body.
-     * Used for search, get by id, create, update, etc.
-     */
+
     public JsonNode post(String path, Map<String, String> params) {
         String body = params.entrySet().stream()
                 .map(e -> encode(e.getKey()) + "=" + encode(e.getValue()))
@@ -47,10 +44,7 @@ public class CheqroomClient {
         return send(request);
     }
 
-    /**
-     * POST with JSON body.
-     * Used for a few endpoints like updateUserRole, setField, createField.
-     */
+
     public JsonNode postJson(String path, Object payload) {
         String body;
         try {

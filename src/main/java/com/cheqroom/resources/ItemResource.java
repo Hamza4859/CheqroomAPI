@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class ItemResource {
 
-    // Exactly 14 custom fields — names must match Cheqroom Settings > Custom Fields exactly
+
     private static final String CUSTOM_FIELDS =
             "fields.SN,fields.Model Number,fields.Type,fields.LastCalibrationDate," +
             "fields.CalibrationFrequency,fields.CalibratedBy,fields.Description," +
@@ -29,7 +29,7 @@ public class ItemResource {
         this.client = client;
     }
 
-    /** Search items */
+
     public JsonNode searchItems(int limit, int skip) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("_fields", ITEM_FIELDS);
@@ -40,15 +40,12 @@ public class ItemResource {
         return client.post("/items/search", params);
     }
 
-    /** Get one or more items by id (comma-separated) */
     public JsonNode getItemsById(String... ids) {
         String idPath = String.join(",", ids);
         Map<String, String> params = new LinkedHashMap<>();
         params.put("_fields", ITEM_FIELDS + ",comments.*,comments.by.name,attachments.*,attachments.by.name");
         return client.post("/items/" + idPath, params);
     }
-
-    /** Search kits */
     public JsonNode searchKits(int limit, int skip) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("_fields",

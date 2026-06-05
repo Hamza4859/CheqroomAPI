@@ -8,8 +8,7 @@ import java.util.Map;
 
 public class OrderResource {
 
-    // Possible listName values:
-    // all, creating, open, closed, today, upcoming, overdue, archived
+
     private static final String FIELDS =
             "number,status,created,started,due,finished,archived,name,itemSummary," +
             "items,fields,customer.name,location.name,fields,label,by.name,by.picture";
@@ -20,7 +19,7 @@ public class OrderResource {
         this.client = client;
     }
 
-    /** Search check-outs by status list */
+
     public JsonNode search(int limit, int skip, String listName) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("_fields", FIELDS);
@@ -31,7 +30,7 @@ public class OrderResource {
         return client.post("/orders/search", params);
     }
 
-    /** Get one or more check-outs by id (comma-separated) */
+
     public JsonNode getById(String... ids) {
         String idPath = String.join(",", ids);
         Map<String, String> params = new LinkedHashMap<>();
