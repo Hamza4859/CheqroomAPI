@@ -23,14 +23,21 @@ public class Main {
         CustomerResource customers = new CustomerResource(client);
 
 
-        System.out.println("\n========== ITEMS ==========");
-        JsonNode result = items.searchItems(25, 0);
+        String itemId = "mHQgDcwJtGCvznaf8UEs7Y"; // replace with your item's ID
+        JsonNode result = items.getItemsById(itemId);
         printItems(result);
 
+        /*
+        System.out.println("\n========== ITEMS ==========");
+        JsonNode result = items.searchItems(1, 0);
+        printItems(result);
+        */
 
+        /*
         System.out.println("\n========== CUSTOMERS ==========");
         JsonNode result2 = customers.search(10, 0, "active_or_blocked");
         printCustomers(result2);
+        */
     }
 
     private static void printCustomers(JsonNode response) {
@@ -70,10 +77,9 @@ public class Main {
 
     private static void printSingleItem(JsonNode item) {
         System.out.println("─────────────────────────────────────────");
+        System.out.printf("  ID        : %s%n", text(item, "_id"));
         System.out.printf("  Name      : %s%n", text(item, "name"));
         System.out.printf("  Status    : %s%n", text(item, "status"));
-        System.out.printf("  Brand     : %s%n", text(item, "brand"));
-        System.out.printf("  Model     : %s%n", text(item, "model"));
         System.out.printf("  Category  : %s%n", item.path("category").path("name").asText("-"));
         System.out.printf("  Location  : %s%n", item.path("location").path("name").asText("-"));
 

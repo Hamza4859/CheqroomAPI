@@ -16,7 +16,7 @@ public class ItemResource {
             "fields.Derogation,fields.Manufacturer,fields.PurchasePO,fields.RetirementDate";
 
     private static final String ITEM_FIELDS =
-            "name,status,brand,model," +
+            "name,status," +
             "kit.name,cover,codes,barcodes," +
             "category,category.name,location,location.name," +
             "flag,custody,canReserve,canOrder,canCustody," +
