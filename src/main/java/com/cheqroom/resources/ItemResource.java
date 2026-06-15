@@ -66,14 +66,28 @@ public class ItemResource {
      * Search for items by Description custom field.
      * FIXED: Using correct API format with double underscore for custom field filter
      */
-    public JsonNode searchByDescription(String description, int limit, int skip) {
+    public JsonNode searchByName(String name, int limit, int skip) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("_fields", ITEM_FIELDS);
         params.put("_sort", "name");
         params.put("_limit", String.valueOf(limit));
         params.put("_skip", String.valueOf(skip));
-        // FIXED: Using fields__Description (double underscore) instead of fields.Description
-        params.put("fields__Description", description);
+        
+        // Using the standard property field name directly
+        params.put("name", name); 
+        
+        return client.post("/items/search", params);
+    }
+
+    public JsonNode searchByCurrentLocation(String currentLocation, int limit, int skip) {
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("_fields", ITEM_FIELDS);
+        params.put("_sort", "name");
+        params.put("_limit", String.valueOf(limit));
+        params.put("_skip", String.valueOf(skip));
+        
+        // Using fields__CurrentLocation (double underscore) for the custom field filter
+        params.put("fields__CurrentLocation", currentLocation);
         return client.post("/items/search", params);
     }
 

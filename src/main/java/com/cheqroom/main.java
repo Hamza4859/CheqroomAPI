@@ -33,10 +33,15 @@ public class Main {
         JsonNode snResult = items.searchBySN("J00269552", 10, 0);
         printItems(snResult);
 
-        // Example: Search by Description
-        System.out.println("\n========== SEARCH BY DESCRIPTION ==========");
-        JsonNode descriptionResult = items.searchByDescription("Accelerometer", 10, 0);
-        printItems(descriptionResult);
+        // Example: Search by Name
+        System.out.println("\n========== SEARCH BY NAME ==========");
+        JsonNode nameResult = items.searchByName("Accelerometer", 10, 0);
+        printItems(nameResult);
+
+        // Example: Search by N
+        System.out.println("\n========== SEARCH BY CURRENT LOCATION ==========");
+        JsonNode locationResult = items.searchByCurrentLocation("Martin Beaucage (maison)", 10, 0);
+        printItems(locationResult);
 
     }
 
