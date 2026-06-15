@@ -21,7 +21,10 @@ public class CheqroomClient {
     private final ObjectMapper mapper;
 
     public CheqroomClient(CheqroomConfig config) {
-        this.baseUrl = "https://app.cheqroom.com/api/v2_5/" + config.getUserId() + "/null/jwt";
+        // FIXED: Using correct API endpoint
+        // Was: https://app.cheqroom.com/api/v2_5/
+        // Now: https://api.cheqroom.com/api/latest/
+        this.baseUrl = "https://api.cheqroom.com/api/latest/" + config.getUserId() + "/null/jwt";
         this.token = config.getToken();
         this.http = HttpClient.newHttpClient();
         this.mapper = new ObjectMapper();
