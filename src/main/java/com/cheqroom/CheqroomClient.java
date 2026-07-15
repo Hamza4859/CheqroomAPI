@@ -21,15 +21,12 @@ public class CheqroomClient {
     private final ObjectMapper mapper;
 
     public CheqroomClient(CheqroomConfig config) {
-        // FIXED: Using correct API endpoint
-        // Was: https://app.cheqroom.com/api/v2_5/
-        // Now: https://api.cheqroom.com/api/latest/
-        this.baseUrl = "https://api.cheqroom.com/api/latest/" + config.getUserId() + "/null/jwt";
+        // ADDED: A trailing slash '/' right after 'jwt'
+        this.baseUrl = "https://api.cheqroom.com/api/latest/" + config.getUserId() + "/null/jwt/";
         this.token = config.getToken();
         this.http = HttpClient.newHttpClient();
         this.mapper = new ObjectMapper();
-    }
-
+    }   
 
     public JsonNode post(String path, Map<String, String> params) {
         String body = params.entrySet().stream()
@@ -88,5 +85,16 @@ public class CheqroomClient {
 
     private String encode(String value) {
         return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    }
+
+    public JsonNode get(String path) {
+    HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(baseUrl + path))
+            .header("Authorization", "Bearer " + token)
+            .header("Accept", "application/json")
+            .GET()
+            .build();
+
+    return send(request);
     }
 }
